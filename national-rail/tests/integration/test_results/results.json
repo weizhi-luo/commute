@@ -1,0 +1,65 @@
+[
+    {
+        "station": {
+            "name": "Charlton",
+            "are_services_available": true,
+            "message": "\nA reduced service will operate on Southern, Thameslink and Great Northern routes until further notice. More information can be found in <a href=\"http://nationalrail.co.uk/service_disruptions/287384.aspx\">Latest Travel News</a>.\n<p>\nAll toilets at the station are out of order at Charlton station.</p>"
+        },
+        "services": [
+            {
+                "id": "tUNe04J2ZJitXHzmVFcQCw==",
+                "status": {
+                    "status": "OnTime",
+                    "abnormality_message": ""
+                },
+                "time": "09:36",
+                "calling_points": [
+                    {
+                        "name": "London Charing Cross",
+                        "time": "10:05",
+                        "is_cancelled": false,
+                        "alert": ""
+                    }
+                ],
+                "length": 10,
+                "platform": "1"
+            },
+            {
+                "id": "lYrbrKftyiD0D80Mzs95Gw==",
+                "status": {
+                    "status": "OnTime",
+                    "abnormality_message": ""
+                },
+                "time": "09:50",
+                "calling_points": [
+                    {
+                        "name": "London Cannon Street",
+                        "time": "10:11",
+                        "is_cancelled": false,
+                        "alert": ""
+                    }
+                ],
+                "length": 8,
+                "platform": "1"
+            },
+            {
+                "id": "nDCPO4/yvD63VcqPZHeGhA==",
+                "status": {
+                    "status": "OnTime",
+                    "abnormality_message": ""
+                },
+                "time": "10:06",
+                "calling_points": [
+                    {
+                        "name": "London Charing Cross",
+                        "time": "10:35",
+                        "is_cancelled": false,
+                        "alert": ""
+                    }
+                ],
+                "length": 8,
+                "platform": "1"
+            }
+        ]
+    }
+]
