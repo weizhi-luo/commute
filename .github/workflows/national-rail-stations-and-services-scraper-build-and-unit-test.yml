@@ -6,8 +6,10 @@ name: Python application
 on:
   push:
     branches: [ main ]
+    paths: ./national-rail/stations_and_services_scraper
   pull_request:
     branches: [ main ]
+    paths: ./national-rail/stations_and_services_scraper
 
 jobs:
   build:
