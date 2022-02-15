@@ -5,7 +5,7 @@ name: National rail stations and services scraper build and integration test
 
 on:
   schedule:
-  - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *"
 
 jobs:
   build:
