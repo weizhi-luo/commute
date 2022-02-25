@@ -21,9 +21,9 @@ class DarwinClient:
         self._station_name_crs_code_mapping = \
             json.loads(config.get('station_name_crs_code_mapping'))
         self._client = self._create_soap_client(
-            config.get('darwin_wsdl'))
+            config.get('wsdl'))
         self._header = self._create_soap_headers(
-            config.get('darwin_token'))
+            config.get('token'))
 
     @staticmethod
     def _create_soap_client(wsdl: str):

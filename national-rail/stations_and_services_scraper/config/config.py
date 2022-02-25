@@ -7,24 +7,31 @@ from data_model import OriginAndCallingPointNames
 
 
 class ConfigSettings(ABC):
+    """Represent a collection of config settings"""
     @abstractmethod
-    def get(self, name: str) -> str:
-        """Get config setting based on the name provided
+    def get_data_access_config(self) -> Mapping:
+        """Get config for setting up data access
 
-        :param name: Name of the setting
-        :return: Value of the setting
+        :return: Data access configuration
         """
         pass
 
+    @abstractmethod
+    def get_services_origin_and_calling_point_names(self)\
+            -> Iterable[OriginAndCallingPointNames]:
+        """Get a collection of services' origin and calling point names
 
-class AwsAppConfigSettings(ConfigSettings):
-    def get(self, name: str) -> str:
-        """Get config setting based on the name provided
-
-        :param name: Name of the setting
-        :return: Value of the setting
+        :return: A collection of instances of `OriginAndCallingPointNames`
         """
-        raise NotImplemented()
+        pass
+
+    @abstractmethod
+    def get_data_publisher_config(self) -> Mapping:
+        """Get config for setting up data publish
+
+        :return: Data publish configuration
+        """
+        pass
 
 
 def get_data_access_config(config_settings: ConfigSettings) -> Mapping:

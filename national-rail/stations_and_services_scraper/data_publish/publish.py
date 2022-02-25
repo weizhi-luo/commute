@@ -28,7 +28,6 @@ class AwsDataPublisher(DataPublisher):
         :param serializer: Serializer that serializes data to string
         """
         self._serializer = serializer
-        raise NotImplementedError()
 
     def publish(self, data: object) -> None:
         """Publish station and services
@@ -37,7 +36,7 @@ class AwsDataPublisher(DataPublisher):
         :return: None
         """
         serialized_data = self._serializer.serialize(data)
-        raise NotImplementedError()
+        print(serialized_data)
 
 
 def publish(data_publisher: DataPublisher,
