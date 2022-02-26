@@ -1,3 +1,4 @@
+"""Represent AWS config settings"""
 import json
 from typing import Iterable, Mapping
 
