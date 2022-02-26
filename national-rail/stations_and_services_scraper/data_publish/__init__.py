@@ -1,2 +1,2 @@
-from .publish import publish, AwsDataPublisher
+from .publish import publish, ConsoleDataPublisher
 from .serialize import JsonDataSerializer

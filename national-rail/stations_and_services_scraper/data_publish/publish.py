@@ -28,6 +28,27 @@ class AwsDataPublisher(DataPublisher):
         :param serializer: Serializer that serializes data to string
         """
         self._serializer = serializer
+        raise NotImplementedError()
+
+    def publish(self, data: object) -> None:
+        """Publish station and services
+
+        :param data: Station and services to be published
+        :return: None
+        """
+        serialized_data = self._serializer.serialize(data)
+        raise NotImplementedError()
+
+
+class ConsoleDataPublisher(DataPublisher):
+    """Represent data publisher to console"""
+
+    def __init__(self, serializer: StringDataSerializer):
+        """Create an instance of `AWSDataPublisher`
+
+        :param serializer: Serializer that serializes data to string
+        """
+        self._serializer = serializer
 
     def publish(self, data: object) -> None:
         """Publish station and services
