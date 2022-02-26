@@ -6,6 +6,8 @@ name: National rail scraper build and unit test
 on:
   push:
     branches: [ main ]
+    paths:
+      - './national-rail/stations_and_services_scraper/**'
   pull_request:
     branches: [ main ]
 
