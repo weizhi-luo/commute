@@ -1,0 +1,38 @@
+name: National rail scraper build and deploy to AWS Lambda
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'national-rail/stations_and_services_scraper/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.9"
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-2
+    - name: Install dependencies
+      working-directory: ./national-rail/stations_and_services_scraper
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -t ./packages
+    - name: deploy
+      working-directory: ./national-rail/stations_and_services_scraper
+      run: |
+        zip -r stations_and_services_scraper config/ *.py data_access/ data_publish/
+        cd packages/
+        zip -r ../stations_and_services_scraper.zip .
+        cd ..
+        aws lambda update-function-code --function-name=national_rail_stations_and_services_scraper --zip-file=fileb://stations_and_services_scraper.zip
