@@ -1,10 +1,8 @@
 name: National rail scraper build and deploy to AWS Lambda
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'national-rail/stations_and_services_scraper/**'
+  schedule:
+    - cron: "0 16 * * 4"
 
 jobs:
   build:
