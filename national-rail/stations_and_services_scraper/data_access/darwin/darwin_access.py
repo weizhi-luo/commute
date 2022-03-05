@@ -46,7 +46,7 @@ class DarwinClient:
         """
         station_crs_code = self._get_station_crs_code(station_name)
         return self._client.service.GetDepBoardWithDetails(
-            numRows=100, crs=station_crs_code, timeOffset=0, timeWindow=120,
+            numRows=20, crs=station_crs_code, timeOffset=0, timeWindow=120,
             _soapheaders=[self._header])
 
     def _get_station_crs_code(self, station_name: str) -> str:

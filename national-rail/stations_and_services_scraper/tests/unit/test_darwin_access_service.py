@@ -5,8 +5,8 @@ from datetime import datetime
 from data_model import Status, ServiceStatus, CallingPoint, Service
 from data_access.darwin.service \
     import get_status, is_service_on_time, is_service_cancelled,\
-    get_abnormality_message, get_service_status, get_service_time, \
-    get_calling_point_time, is_calling_point_cancelled,\
+    is_service_delayed, get_abnormality_message, get_service_status,\
+    get_service_time, get_calling_point_time, is_calling_point_cancelled,\
     get_calling_point_alert, get_calling_point, get_calling_points,\
     get_service, is_valid_service, get_services
 
@@ -24,15 +24,67 @@ class TestIsServiceOnTime(unittest.TestCase):
 
 
 class TestIsServiceCancelled(unittest.TestCase):
-    def test_cancelled(self):
-        service_item = {'isCancelled': True}
+    def test_etd_set_to_On_time_isCancelled_not_set_to_True_is_not_cancelled(self):
+        service_item = {'etd': 'On time', 'isCancelled': None}
+
+        self.assertFalse(is_service_cancelled(service_item))
+
+    def test_etd_set_to_Delayed_isCancelled_not_set_to_True_is_not_cancelled(self):
+        service_item = {'etd': 'Delayed', 'isCancelled': None}
+
+        self.assertFalse(is_service_cancelled(service_item))
+
+    def test_etd_set_to_time_isCancelled_not_set_to_True_is_not_cancelled(self):
+        service_item = {'etd': '09:41', 'isCancelled': None}
+
+        self.assertFalse(is_service_cancelled(service_item))
+
+    def test_etd_set_to_Cancelled_is_cancelled(self):
+        service_item = {'etd': 'Cancelled'}
 
         self.assertTrue(is_service_cancelled(service_item))
 
-    def test_not_cancelled(self):
-        service_item = {'isCancelled': None}
+    def test_isCancelled_set_to_True_etd_set_to_Cancelled_is_cancelled(self):
+        service_item = {'etd': 'Cancelled', 'isCancelled': True}
 
-        self.assertFalse(is_service_cancelled(service_item))
+        self.assertTrue(is_service_cancelled(service_item))
+
+    def test_isCancelled_set_to_None_etd_set_to_Cancelled_is_cancelled(self):
+        service_item = {'etd': 'Cancelled', 'isCancelled': None}
+
+        self.assertTrue(is_service_cancelled(service_item))
+
+
+class TestIsServiceDelayed(unittest.TestCase):
+    def test_etd_set_to_On_time_isCancelled_not_set_to_True_is_not_delayed(self):
+        service_item = {'std': '09:25', 'etd': 'On time', 'isCancelled': None}
+
+        self.assertFalse(is_service_delayed(service_item))
+
+    def test_etd_set_to_Delayed_isCancelled_not_set_to_True_is_delayed(self):
+        service_item = {'std': '09:08', 'etd': 'Delayed', 'isCancelled': None}
+
+        self.assertTrue(is_service_delayed(service_item))
+
+    def test_etd_set_to_time_isCancelled_not_set_to_True_is_not_delayed(self):
+        service_item = {'std': '09:40', 'etd': '09:41', 'isCancelled': None}
+
+        self.assertFalse(is_service_delayed(service_item))
+
+    def test_etd_set_to_Cancelled_is_note_delayed(self):
+        service_item = {'etd': 'Cancelled'}
+
+        self.assertFalse(is_service_delayed(service_item))
+
+    def test_isCancelled_set_to_True_etd_set_to_Cancelled_is_not_delayed(self):
+        service_item = {'etd': 'Cancelled', 'isCancelled': True}
+
+        self.assertFalse(is_service_delayed(service_item))
+
+    def test_isCancelled_set_to_None_etd_set_to_Cancelled_is_not_delayed(self):
+        service_item = {'etd': 'Cancelled', 'isCancelled': None}
+
+        self.assertFalse(is_service_delayed(service_item))
 
 
 class TestGetAbnormalityMessage(unittest.TestCase):
@@ -119,23 +171,33 @@ class TestGetAbnormalityMessage(unittest.TestCase):
 
 
 class TestGetStatus(unittest.TestCase):
-    def test_return_on_time(self):
+    def test_etd_set_to_On_time_isCancelled_not_set_return_on_time(self):
         service_item = {'etd': 'On time', 'isCancelled': None}
 
         self.assertIs(get_status(service_item), Status.OnTime)
 
-    def test_return_new_time(self):
+    def test_etd_set_to_time_isCancelled_not_set_return_new_time(self):
         service_item = {'etd': '00:15', 'isCancelled': None}
 
         self.assertIs(get_status(service_item), Status.NewTime)
 
-    def test_etd_on_time_return_cancelled(self):
+    def test_etd_set_to_Delayed_isCancelled_not_set_return_delayed(self):
+        service_item = {'etd': 'Delayed', 'isCancelled': None}
+
+        self.assertIs(get_status(service_item), Status.Delayed)
+
+    def test_etd_set_to_On_time_isCancelled_set_to_True_return_cancelled(self):
         service_item = {'etd': 'On time', 'isCancelled': True}
 
         self.assertIs(get_status(service_item), Status.Cancelled)
 
-    def test_etd_not_on_time_return_cancelled(self):
+    def test_etd_set_to_time_isCancelled_set_to_True_return_cancelled(self):
         service_item = {'etd': '00:15', 'isCancelled': True}
+
+        self.assertIs(get_status(service_item), Status.Cancelled)
+
+    def test_etd_set_to_Cancelled_isCancelled_set_to_True_return_cancelled(self):
+        service_item = {'etd': 'Cancelled', 'isCancelled': True}
 
         self.assertIs(get_status(service_item), Status.Cancelled)
 
@@ -156,7 +218,7 @@ class TestGetServiceStatus(unittest.TestCase):
 
     def test_return_cancelled_service_status(self):
         service_item = {
-            'etd': 'On time',
+            'etd': 'Cancelled',
             'isCancelled': True,
             'cancelReason': 'Cancelled due to faulty train.',
             'delayReason': None,
@@ -181,6 +243,21 @@ class TestGetServiceStatus(unittest.TestCase):
         service_status_expected =\
             ServiceStatus(Status.NewTime,
                           'Delay reason: Delayed due to signalling problems.')
+
+        self.assertEqual(service_status, service_status_expected)
+
+    def test_return_delayed_service_status(self):
+        service_item = {
+            'etd': 'Delayed',
+            'isCancelled': None,
+            'cancelReason': None,
+            'delayReason': 'Delayed due to engineering work.',
+            'adhocAlerts': None
+        }
+        service_status = get_service_status(service_item)
+        service_status_expected =\
+            ServiceStatus(Status.Delayed,
+                          'Delay reason: Delayed due to engineering work.')
 
         self.assertEqual(service_status, service_status_expected)
 

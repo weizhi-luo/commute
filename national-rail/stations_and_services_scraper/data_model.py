@@ -41,6 +41,7 @@ class Status(str, Enum):
     OnTime = 'OnTime'
     NewTime = 'NewTime'
     Cancelled = 'Cancelled'
+    Delayed = 'Delayed'
 
 
 class ServiceStatus:

@@ -5,10 +5,10 @@ from typing import List
 from data_model import Service, ServiceStatus, Status, CallingPoint
 
 
-def get_services(departure_board_with_details, calling_point_names_included)\
+def get_services(departure_board_with_details, calling_point_names_included) \
         -> List[Service]:
     services = departure_board_with_details['trainServices']
-    return [] if not services else\
+    return [] if not services else \
         [get_service(s, calling_point_names_included)
          for s in filter(
             lambda s: is_valid_service(s, calling_point_names_included),
@@ -42,7 +42,9 @@ def get_service_status(service_item) -> ServiceStatus:
 def get_status(service_item) -> Status:
     is_on_time = is_service_on_time(service_item)
     is_cancelled = is_service_cancelled(service_item)
+    is_delayed = is_service_delayed(service_item)
     return Status.Cancelled if is_cancelled \
+        else Status.Delayed if is_delayed \
         else Status.OnTime if is_on_time else Status.NewTime
 
 
@@ -51,7 +53,14 @@ def is_service_on_time(service_item) -> bool:
 
 
 def is_service_cancelled(service_item) -> bool:
-    return True if service_item['isCancelled'] else False
+    if service_item['etd'].casefold().strip() == 'cancelled' \
+       or service_item['isCancelled']:
+        return True
+    return False
+
+
+def is_service_delayed(service_item) -> bool:
+    return service_item['etd'].casefold().strip() == 'delayed'
 
 
 def get_abnormality_message(service_item) -> str:
@@ -69,8 +78,8 @@ def get_abnormality_message(service_item) -> str:
 def get_service_time(service_item) -> datetime.time:
     scheduled_departure_time = service_item['std']
     estimated_departure_time = service_item['etd']
-    return datetime.strptime(scheduled_departure_time, '%H:%M').time()\
-        if estimated_departure_time.casefold().strip() == 'on time'\
+    return datetime.strptime(scheduled_departure_time, '%H:%M').time() \
+        if estimated_departure_time.casefold().strip() == 'on time' \
         else datetime.strptime(estimated_departure_time, '%H:%M').time()
 
 
@@ -93,10 +102,10 @@ def get_calling_point(calling_point) -> CallingPoint:
 
 
 def get_calling_point_time(calling_point) -> str:
-    return calling_point['at']\
-        if calling_point['at']\
-        else calling_point['st']\
-        if calling_point['et'].casefold().strip() == 'on time'\
+    return calling_point['at'] \
+        if calling_point['at'] \
+        else calling_point['st'] \
+        if calling_point['et'].casefold().strip() == 'on time' \
         else calling_point['et']
 
 
@@ -105,7 +114,7 @@ def is_calling_point_cancelled(calling_point) -> bool:
 
 
 def get_calling_point_alert(calling_point) -> str:
-    return '' if not calling_point['adhocAlerts']\
+    return '' if not calling_point['adhocAlerts'] \
         else '\n'.join(calling_point['adhocAlerts'])
 
 
