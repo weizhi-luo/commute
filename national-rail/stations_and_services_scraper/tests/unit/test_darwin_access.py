@@ -11,7 +11,7 @@ from data_access.darwin.darwin_access import get_station_and_services,\
                                              DarwinDataAccess
 from data_model import Service, ServiceStatus, Status, CallingPoint, Station,\
                        StationAndServices, OriginAndCallingPointNames
-from config import ConfigSettings
+from config_access import ConfigAccess
 
 
 TEST_DATA_FILE = path.join(
@@ -87,7 +87,7 @@ class TestDarwinDataAccess(unittest.TestCase):
     def setUpClass(cls) -> None:
         with open(TEST_DATA_FILE) as file:
             cls.departure_board = json.load(file)
-        cls.config_setting = Mock(spec=ConfigSettings)
+        cls.config_setting = Mock(spec=ConfigAccess)
         cls.origin_and_calling_point_names = OriginAndCallingPointNames(
             cls.origin, cls.calling_point_names)
         cls.error = StationCrsCodeNotFoundError(cls.error_message)
